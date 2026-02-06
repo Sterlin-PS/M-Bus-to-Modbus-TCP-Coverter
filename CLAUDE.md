@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Session Context**: See `SESSION.md` for detailed development history and TODO items.
+
 ## Project Overview
 
 M-Bus to Modbus TCP Converter - A Node.js system that bridges M-Bus (Meter-Bus) devices to Modbus TCP. Supports multiple loops, multiple devices per loop, with SQLite configuration persistence.
