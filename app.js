@@ -23,7 +23,7 @@ app.get('/api/loops', (req, res) => {
 
 // API: Add new loop
 app.post('/api/loops', (req, res) => {
-  const { id, name, mbusType, mbusHost, mbusPort, mbusPath, baudeRate, modbusPort, pollInterval } = req.body;
+  const { id, name, mbusType, mbusHost, mbusPort, mbusPath, baudRate, modbusPort, pollInterval, mbusAddress } = req.body;
 
   const config = {
     id: parseInt(id),
@@ -32,8 +32,8 @@ app.post('/api/loops', (req, res) => {
     pollInterval: parseInt(pollInterval) || 60000,
     mbus: mbusType === 'tcp'
       ? { type: 'tcp', host: mbusHost, port: parseInt(mbusPort) }
-      : { type: 'serial', path: mbusPath, baudRate: parseInt(baudeRate) || 2400 },
-    mappings: []
+      : { type: 'serial', path: mbusPath, baudRate: parseInt(baudRate) || 2400 },
+    devices: [{ address: parseInt(mbusAddress) || 1, registerOffset: 0 }]
   };
 
   loopManager.addLoop(config);
@@ -90,7 +90,13 @@ app.post('/api/loops/:id/read', async (req, res) => {
     console.log(`[Loop ${loopId}] Read result:`, data.error || `${data.records?.length || 0} records`);
     if (data.records) {
       data.records.forEach((r, i) => console.log(`  [${i}] ${r.value} ${r.unit}`));
+      // Also update Modbus registers from test read
+      if (loop.modbus) {
+        loop.mapToRegisters(data.records, 0);
+        console.log(`[Loop ${loopId}] Updated Modbus registers`);
+      }
     }
+    loop.lastData = data;
     res.json(data);
   } catch (err) {
     console.log(`[Loop ${loopId}] Read error:`, err.message);
