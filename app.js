@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const loopManager = require('./lib/LoopManager');
+const db = require('./lib/Database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,145 +17,160 @@ app.get('/', (req, res) => {
   res.render('dashboard', { loops: loopManager.getStatus() });
 });
 
-// API: Get all loops status
+// ==================== LOOP APIs ====================
+
 app.get('/api/loops', (req, res) => {
   res.json(loopManager.getStatus());
 });
 
-// API: Add new loop
 app.post('/api/loops', (req, res) => {
-  const { id, name, mbusType, mbusHost, mbusPort, mbusPath, baudRate, modbusPort, pollInterval, mbusAddress } = req.body;
+  const { id, name, mbusType, mbusHost, mbusPort, mbusPath, baudRate, modbusPort, pollInterval } = req.body;
 
-  const config = {
-    id: parseInt(id),
-    name,
-    modbusPort: parseInt(modbusPort),
-    pollInterval: parseInt(pollInterval) || 60000,
-    mbus: mbusType === 'tcp'
-      ? { type: 'tcp', host: mbusHost, port: parseInt(mbusPort) }
-      : { type: 'serial', path: mbusPath, baudRate: parseInt(baudRate) || 2400 },
-    devices: [{ address: mbusAddress || '1', registerOffset: 0 }]
-  };
-
-  loopManager.addLoop(config);
-  res.json({ success: true, id: config.id });
+  try {
+    const loop = loopManager.createLoop({
+      id: parseInt(id),
+      name,
+      mbusType,
+      mbusHost,
+      mbusPort: parseInt(mbusPort),
+      mbusPath,
+      baudRate: parseInt(baudRate) || 2400,
+      modbusPort: parseInt(modbusPort),
+      pollInterval: parseInt(pollInterval) || 60000
+    });
+    res.json({ success: true, id: loop.id });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
 });
 
-// API: Start loop
 app.post('/api/loops/:id/start', async (req, res) => {
   const result = await loopManager.startLoop(parseInt(req.params.id));
   res.json(result);
 });
 
-// API: Stop loop
 app.post('/api/loops/:id/stop', (req, res) => {
   loopManager.stopLoop(parseInt(req.params.id));
   res.json({ success: true });
 });
 
-// API: Delete loop
 app.delete('/api/loops/:id', (req, res) => {
-  loopManager.removeLoop(parseInt(req.params.id));
+  loopManager.deleteLoop(parseInt(req.params.id));
   res.json({ success: true });
 });
 
-// API: Read M-Bus device (test read)
+// ==================== DEVICE APIs ====================
+
+app.get('/api/loops/:id/devices', (req, res) => {
+  const loop = loopManager.getLoop(parseInt(req.params.id));
+  if (!loop) return res.json({ error: 'Loop not found' });
+  res.json(loop.devices);
+});
+
+app.post('/api/loops/:id/devices', (req, res) => {
+  const loopId = parseInt(req.params.id);
+  const { name, mbusAddress, modbusUnitId } = req.body;
+
+  try {
+    const device = loopManager.addDevice(loopId, {
+      name,
+      mbusAddress,
+      modbusUnitId: parseInt(modbusUnitId)
+    });
+    res.json({ success: true, device });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/devices/:id', (req, res) => {
+  loopManager.deleteDevice(parseInt(req.params.id));
+  res.json({ success: true });
+});
+
+// ==================== MAPPING APIs ====================
+
+app.get('/api/devices/:id/mappings', (req, res) => {
+  const mappings = db.getMappings(parseInt(req.params.id));
+  res.json(mappings);
+});
+
+app.post('/api/devices/:id/mappings', (req, res) => {
+  const deviceId = parseInt(req.params.id);
+  const { name, mbusRecordIndex, mbusUnit, modbusRegister, dataType, scale } = req.body;
+
+  try {
+    const mapping = loopManager.addMapping(deviceId, {
+      name,
+      mbusRecordIndex: parseInt(mbusRecordIndex),
+      mbusUnit,
+      modbusRegister: parseInt(modbusRegister),
+      dataType: dataType || 'FLOAT32',
+      scale: parseFloat(scale) || 1.0
+    });
+    res.json({ success: true, mapping });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+app.delete('/api/mappings/:id', (req, res) => {
+  loopManager.deleteMapping(parseInt(req.params.id));
+  res.json({ success: true });
+});
+
+// ==================== TEST READ API ====================
+
 app.post('/api/loops/:id/read', async (req, res) => {
   const loopId = parseInt(req.params.id);
   const loop = loopManager.getLoop(loopId);
-  console.log(`[Loop ${loopId}] Test read requested`);
 
   if (!loop) {
-    console.log(`[Loop ${loopId}] Loop not found`);
     return res.json({ error: 'Loop not found' });
   }
-  if (!loop.mbus) {
-    console.log(`[Loop ${loopId}] M-Bus not connected, connecting now...`);
-    // Try to connect for test read even if loop not started
+
+  // Create temporary M-Bus connection if loop not running
+  let mbus = loop.mbus;
+  let tempConnection = false;
+
+  if (!mbus) {
     const MBusReader = require('./lib/MBusReader');
-    loop.mbus = new MBusReader(loop.mbusConfig);
+    mbus = new MBusReader(loop.mbusConfig);
     try {
-      await loop.mbus.connect();
-      console.log(`[Loop ${loopId}] M-Bus connected`);
+      await mbus.connect();
+      tempConnection = true;
     } catch (err) {
-      console.log(`[Loop ${loopId}] M-Bus connect error:`, err.message);
       return res.json({ error: 'M-Bus connect failed: ' + err.message });
     }
   }
 
   const address = req.body.address || '1';
-  console.log(`[Loop ${loopId}] Reading M-Bus address ${address}...`);
+  console.log(`[Loop ${loopId}] Test read address ${address}...`);
 
   try {
     let data;
-    // Use secondary addressing if address is longer than 3 chars
     if (address.toString().length > 3) {
-      data = await loop.mbus.readDeviceSecondary(address.toString());
+      data = await mbus.readDeviceSecondary(address.toString());
     } else {
-      data = await loop.mbus.readDevice(parseInt(address));
+      data = await mbus.readDevice(parseInt(address));
     }
-    console.log(`[Loop ${loopId}] Read result:`, data.error || `${data.records?.length || 0} records`);
-    if (data.records) {
-      data.records.forEach((r, i) => console.log(`  [${i}] ${r.value} ${r.unit}`));
-      // Also update Modbus registers from test read
-      if (loop.modbus) {
-        loop.mapToRegisters(data.records, 0);
-        console.log(`[Loop ${loopId}] Updated Modbus registers`);
-      }
-    }
-    loop.lastData = data;
+
+    if (tempConnection) mbus.disconnect();
+
+    console.log(`[Loop ${loopId}] Test read result:`, data.error || `${data.records?.length || 0} records`);
     res.json(data);
   } catch (err) {
-    console.log(`[Loop ${loopId}] Read error:`, err.message);
+    if (tempConnection) mbus.disconnect();
     res.json({ error: err.message });
   }
 });
 
-// API: Get registers for a loop
-app.get('/api/loops/:id/registers', (req, res) => {
-  const loop = loopManager.getLoop(parseInt(req.params.id));
-  if (!loop) return res.json({ error: 'Loop not found' });
-  res.json(loop.getStatus());
-});
-
-// API: Update loop M-Bus address (primary 1-250 or secondary 8-digit ID)
-app.post('/api/loops/:id/address', (req, res) => {
-  const loop = loopManager.getLoop(parseInt(req.params.id));
-  if (!loop) return res.json({ error: 'Loop not found' });
-
-  const address = req.body.address;
-  // Validate: either primary (1-250) or secondary (8+ chars)
-  if (address && (address.toString().length > 3 || (parseInt(address) >= 1 && parseInt(address) <= 250))) {
-    loop.devices = [{ address: address.toString(), registerOffset: 0 }];
-    console.log(`[Loop ${loop.id}] M-Bus address changed to ${address}`);
-    res.json({ success: true, address });
-  } else {
-    res.json({ error: 'Invalid address. Use 1-250 (primary) or 8-digit ID (secondary)' });
-  }
-});
-
-// Add mapping to loop
-app.post('/api/loops/:id/mappings', (req, res) => {
-  const loop = loopManager.getLoop(parseInt(req.params.id));
-  if (!loop) return res.json({ error: 'Loop not found' });
-
-  const mapping = {
-    mbusAddress: parseInt(req.body.mbusAddress),
-    registers: [{
-      address: parseInt(req.body.registerAddress),
-      type: req.body.registerType || 'int16',
-      testValue: parseFloat(req.body.testValue) || 0
-    }]
-  };
-
-  loop.mappings.push(mapping);
-  res.json({ success: true });
-});
+// ==================== START SERVER ====================
 
 app.listen(PORT, () => {
   console.log('');
   console.log('='.repeat(50));
-  console.log(`M-Bus to Modbus Converter`);
+  console.log('M-Bus to Modbus Converter');
   console.log(`Dashboard: http://localhost:${PORT}`);
   console.log('='.repeat(50));
   console.log('');
