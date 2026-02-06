@@ -1,0 +1,502 @@
+istavindis3111@istavindis3111:~/libmbus/bin$ mbus-serial-scan-secondary -b 2400 /dev/ttyUSB0
+Found a device on secondary address 000203702423930E [using address mask 0FFFFFFFFFFFFFFF]
+Found a device on secondary address 2534282473513321 [using address mask 2FFFFFFFFFFFFFFF]
+Found a device on secondary address 66786758A7320304 [using address mask 6FFFFFFFFFFFFFFF]
+Found a device on secondary address 87638599A511400A [using address mask 8FFFFFFFFFFFFFFF]
+istavindis3111@istavindis3111:~/libmbus/bin$ ./mbus-serial-request-data -b 2400 /dev/ttyUSB0 68445289A732070A
+^C
+istavindis3111@istavindis3111:~/libmbus/bin$ ./mbus-serial-request-data -b 2400 /dev/ttyUSB0 2534282473513321
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>25342824</Id>
+        <Manufacturer>TKS</Manufacturer>
+        <Version>51</Version>
+        <ProductName></ProductName>
+        <Medium>Valve: Gas or Water</Medium>
+        <AccessNumber>57</AccessNumber>
+        <Status>10</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>2</Value>
+        <Timestamp>2026-02-06T10:45:30Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Error flags</Unit>
+        <Value>8</Value>
+        <Timestamp>2026-02-06T10:45:30Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Cumulation counter</Unit>
+        <Value>28</Value>
+        <Timestamp>2026-02-06T10:45:30Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Reserved</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:30Z</Timestamp>
+    </DataRecord>
+
+</MBusData>
+istavindis3111@istavindis3111:~/libmbus/bin$ ./mbus-serial-request-data -b 2400 /dev/ttyUSB0 66786758A7320304
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>66786758</Id>
+        <Manufacturer>LUG</Manufacturer>
+        <Version>3</Version>
+        <ProductName>Landis &amp; Gyr Ultraheat 2WR6</ProductName>
+        <Medium>Heat: Outlet</Medium>
+        <AccessNumber>106</AccessNumber>
+        <Status>30</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Actuality Duration (seconds)</Unit>
+        <Value>8</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Averaging Duration (seconds)</Unit>
+        <Value>8</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (1e-2  m^3)</Unit>
+        <Value>56008</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (100 W)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (deg C)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (deg C)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Temperature Difference (1e-1  deg C)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume (1e-2  m^3)</Unit>
+        <Value>56008</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Fabrication number</Unit>
+        <Value>66786758</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>On time (hours)</Unit>
+        <Value>123555</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>On time (hours)</Unit>
+        <Value>43724</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>On time (hours)</Unit>
+        <Value>42845</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2000-01-01</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="16">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>2</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="17">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>3</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="18">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>4</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="19">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>5</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="20">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>6</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="21">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>7</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="22">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>8</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="23">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>9</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="24">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>10</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="25">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>11</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="26">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>12</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="27">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>13</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="28">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>14</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="29">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>15</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="30">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>16</StorageNumber>
+        <Tariff>0</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>766</Value>
+        <Timestamp>2026-02-06T10:45:44Z</Timestamp>
+    </DataRecord>
+
+</MBusData>
+istavindis3111@istavindis3111:~/libmbus/bin$ ./mbus-serial-request-data -b 2400 /dev/ttyUSB0 87638599A511400A
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MBusData>
+
+    <SlaveInformation>
+        <Id>87638599</Id>
+        <Manufacturer>DME</Manufacturer>
+        <Version>64</Version>
+        <ProductName></ProductName>
+        <Medium>Cooling load meter: Outlet</Medium>
+        <AccessNumber>9</AccessNumber>
+        <Status>70</Status>
+        <Signature>0000</Signature>
+    </SlaveInformation>
+
+    <DataRecord id="0">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="1">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="2">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="3">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="4">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Power (W)</Unit>
+        <Value>DDDDEBBD</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="5">
+        <Function>Value during error state</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Volume flow (m m^3/h)</Unit>
+        <Value>DDEBBD</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="6">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Flow temperature (1e-1 deg C)</Unit>
+        <Value>259</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="7">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Return temperature (1e-1 deg C)</Unit>
+        <Value>260</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="8">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Temperature Difference (1e-1  deg C)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="9">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Operating time (hours)</Unit>
+        <Value>3405</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="10">
+        <Function>Instantaneous value</Function>
+        <StorageNumber>0</StorageNumber>
+        <Unit>Time Point (time &amp; date)</Unit>
+        <Value>2026-02-06T12:52:00</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="11">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="12">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Volume (m m^3)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="13">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>1</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="14">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Tariff>2</Tariff>
+        <Device>0</Device>
+        <Unit>Energy (kWh)</Unit>
+        <Value>0</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+    <DataRecord id="15">
+        <Function>Value during error state</Function>
+        <StorageNumber>1</StorageNumber>
+        <Unit>Time Point (date)</Unit>
+        <Value>2000-00-00</Value>
+        <Timestamp>2026-02-06T10:46:05Z</Timestamp>
+    </DataRecord>
+
+</MBusData>
+istavindis3111@istavindis3111:~/libmbus/bin$ 
