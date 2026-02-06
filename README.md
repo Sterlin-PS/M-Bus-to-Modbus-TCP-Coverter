@@ -2,7 +2,7 @@
 
 A lightweight Node.js application that bridges M-Bus (Meter-Bus) devices to Modbus TCP protocol. Enables integration of M-Bus meters (heat, water, gas, electricity) with SCADA systems, BMS, and industrial automation platforms.
 
-![Dashboard Screenshot](docs/dashboard.png)
+
 
 ## Features
 
