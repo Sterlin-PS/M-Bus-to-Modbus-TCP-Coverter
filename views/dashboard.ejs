@@ -85,7 +85,7 @@
           </div>
           <div class="form-group">
             <label>M-Bus Addr</label>
-            <input type="number" name="mbusAddress" value="1" style="width:60px" title="M-Bus device address (1-250)">
+            <input type="text" name="mbusAddress" value="1" style="width:90px" title="Primary (1-250) or Secondary (8-digit ID like 66786758)">
           </div>
           <div class="form-group">
             <label>Poll (ms)</label>
@@ -195,19 +195,19 @@
     }
 
     async function changeAddress(id) {
-      const address = prompt('Enter M-Bus device address (1-250):', '25');
+      const address = prompt('M-Bus address:\n- Primary: 1-250\n- Secondary: 8-digit ID (e.g., 66786758)', '25');
       if (!address) return;
       await fetch(`/api/loops/${id}/address`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: parseInt(address) })
+        body: JSON.stringify({ address })
       });
       alert('Address updated to ' + address + '. Restart loop to apply.');
       location.reload();
     }
 
     async function testRead(id) {
-      const address = prompt('M-Bus device address (1-250):', '1');
+      const address = prompt('M-Bus address:\n- Primary: 1-250\n- Secondary: 8-digit ID (e.g., 66786758)', '25');
       if (!address) return;
       const el = document.getElementById(`result-${id}`);
       el.style.display = 'block';
