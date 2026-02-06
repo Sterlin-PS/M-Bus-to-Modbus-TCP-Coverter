@@ -60,13 +60,42 @@ app.delete('/api/loops/:id', (req, res) => {
 
 // API: Read M-Bus device (test read)
 app.post('/api/loops/:id/read', async (req, res) => {
-  const loop = loopManager.getLoop(parseInt(req.params.id));
-  if (!loop || !loop.mbus) {
-    return res.json({ error: 'Loop not running' });
+  const loopId = parseInt(req.params.id);
+  const loop = loopManager.getLoop(loopId);
+  console.log(`[Loop ${loopId}] Test read requested`);
+
+  if (!loop) {
+    console.log(`[Loop ${loopId}] Loop not found`);
+    return res.json({ error: 'Loop not found' });
   }
+  if (!loop.mbus) {
+    console.log(`[Loop ${loopId}] M-Bus not connected, connecting now...`);
+    // Try to connect for test read even if loop not started
+    const MBusReader = require('./lib/MBusReader');
+    loop.mbus = new MBusReader(loop.mbusConfig);
+    try {
+      await loop.mbus.connect();
+      console.log(`[Loop ${loopId}] M-Bus connected`);
+    } catch (err) {
+      console.log(`[Loop ${loopId}] M-Bus connect error:`, err.message);
+      return res.json({ error: 'M-Bus connect failed: ' + err.message });
+    }
+  }
+
   const address = parseInt(req.body.address) || 1;
-  const data = await loop.mbus.readDevice(address);
-  res.json(data);
+  console.log(`[Loop ${loopId}] Reading M-Bus address ${address}...`);
+
+  try {
+    const data = await loop.mbus.readDevice(address);
+    console.log(`[Loop ${loopId}] Read result:`, data.error || `${data.records?.length || 0} records`);
+    if (data.records) {
+      data.records.forEach((r, i) => console.log(`  [${i}] ${r.value} ${r.unit}`));
+    }
+    res.json(data);
+  } catch (err) {
+    console.log(`[Loop ${loopId}] Read error:`, err.message);
+    res.json({ error: err.message });
+  }
 });
 
 // API: Get registers for a loop
@@ -95,5 +124,10 @@ app.post('/api/loops/:id/mappings', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`M-Bus to Modbus Converter running on http://localhost:${PORT}`);
+  console.log('');
+  console.log('='.repeat(50));
+  console.log(`M-Bus to Modbus Converter`);
+  console.log(`Dashboard: http://localhost:${PORT}`);
+  console.log('='.repeat(50));
+  console.log('');
 });

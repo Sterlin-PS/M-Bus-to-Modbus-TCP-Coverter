@@ -194,27 +194,42 @@
       if (!address) return;
       const el = document.getElementById(`result-${id}`);
       el.style.display = 'block';
-      el.innerHTML = '<i>Reading...</i>';
+      el.innerHTML = '<i>Reading address ' + address + '...</i>';
 
-      const res = await fetch(`/api/loops/${id}/read`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: parseInt(address) })
-      });
-      const data = await res.json();
-
-      if (data.error) {
-        el.innerHTML = `<div style="color:#e94560">Error: ${data.error}</div>`;
-      } else if (data.records && data.records.length > 0) {
-        let html = `<div class="meter-info"><b>ID:</b> ${data.id} | <b>Mfr:</b> ${data.manufacturer} | <b>Medium:</b> ${data.medium}</div>`;
-        html += '<table class="records-table"><tr><th>#</th><th>Value</th><th>Unit</th><th>Raw</th></tr>';
-        data.records.forEach((rec, i) => {
-          html += `<tr><td>${i}</td><td class="value">${rec.value.toFixed(3)}</td><td class="unit">${rec.unit}</td><td>${rec.rawValue}</td></tr>`;
+      try {
+        const res = await fetch(`/api/loops/${id}/read`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: parseInt(address) })
         });
-        html += '</table>';
-        el.innerHTML = html;
-      } else {
-        el.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+        if (!res.ok) {
+          el.innerHTML = `<div style="color:#e94560">HTTP Error: ${res.status}</div>`;
+          return;
+        }
+
+        const data = await res.json();
+        console.log('Test read result:', data);
+
+        if (data.error) {
+          el.innerHTML = `<div style="color:#e94560">Error: ${data.error}</div>`;
+        } else if (data.records && data.records.length > 0) {
+          let html = `<div class="meter-info"><b>ID:</b> ${data.id || 'N/A'} | <b>Mfr:</b> ${data.manufacturer || 'N/A'} | <b>Medium:</b> ${data.medium || 'N/A'}</div>`;
+          html += '<table class="records-table"><tr><th>#</th><th>Value</th><th>Unit</th><th>Raw</th></tr>';
+          data.records.forEach((rec, i) => {
+            const val = typeof rec.value === 'number' ? rec.value.toFixed(3) : rec.value;
+            html += `<tr><td>${i}</td><td class="value">${val}</td><td class="unit">${rec.unit}</td><td>${rec.rawValue}</td></tr>`;
+          });
+          html += '</table>';
+          el.innerHTML = html;
+        } else if (data.raw) {
+          el.innerHTML = `<div class="meter-info">Raw response (no records parsed)</div><pre style="font-size:10px;word-break:break-all">${data.raw}</pre>`;
+        } else {
+          el.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+      } catch (err) {
+        console.error('Test read error:', err);
+        el.innerHTML = `<div style="color:#e94560">Fetch error: ${err.message}</div>`;
       }
     }
 
