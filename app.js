@@ -111,6 +111,20 @@ app.get('/api/loops/:id/registers', (req, res) => {
   res.json(loop.getStatus());
 });
 
+// API: Update loop M-Bus address
+app.post('/api/loops/:id/address', (req, res) => {
+  const loop = loopManager.getLoop(parseInt(req.params.id));
+  if (!loop) return res.json({ error: 'Loop not found' });
+  const address = parseInt(req.body.address);
+  if (address >= 1 && address <= 250) {
+    loop.devices = [{ address, registerOffset: 0 }];
+    console.log(`[Loop ${loop.id}] M-Bus address changed to ${address}`);
+    res.json({ success: true, address });
+  } else {
+    res.json({ error: 'Invalid address (1-250)' });
+  }
+});
+
 // Add mapping to loop
 app.post('/api/loops/:id/mappings', (req, res) => {
   const loop = loopManager.getLoop(parseInt(req.params.id));
